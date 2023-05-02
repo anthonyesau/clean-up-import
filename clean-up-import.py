@@ -2,7 +2,7 @@ import bpy
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 3),
+   "version": (0, 4),
    "blender": (3, 5, 0)
 }
 
@@ -25,6 +25,7 @@ class CustomPanel(bpy.types.Panel):
 class MergeDuplicateTexturesOperator(bpy.types.Operator):
     bl_idname = "custom.merge_duplicate_textures"
     bl_label = "Merge Duplicate Textures"
+    bl_description = "Merge texName, texName.001, texName.002, et cetera."
 
     def execute(self, context):
         print("----- Merge Duplicate Textures -----")
@@ -52,6 +53,7 @@ class MergeDuplicateTexturesOperator(bpy.types.Operator):
 class DeleteCameraOperator(bpy.types.Operator):
     bl_idname = "custom.delete_camera"
     bl_label = "Delete Camera(s) 'CINEMA_4D_Editor'"
+    bl_description = "Delete Camera(s) 'CINEMA_4D_Editor'."
 
     def execute(self, context):
         print("----- Delete Camera(s) with Object Name 'CINEMA_4D_Editor' -----")
@@ -68,23 +70,22 @@ class DeleteCameraOperator(bpy.types.Operator):
 class DeleteVWLights(bpy.types.Operator):
     bl_idname = "custom.delete_vw_lights"
     bl_label = "Delete generic lights imported from VW"
+    bl_description = "Delete generic lights imported from VW."
 
     def execute(self, context):
-        # Searching for objects with names starting with "Ambient_Omni_Light"
+        # Search for objects with names starting with "Ambient_Omni_Light"
         light_names = [obj.name for obj in bpy.data.objects if obj.type == 'LIGHT' and obj.name.startswith("Ambient_Omni_Light")]
 
-        # Removing all objects with the found names
+        # Remove all objects with the found names
         for light_name in light_names:
-            bpy.data.objects[light_name].select_set(True)
-        bpy.ops.object.delete()
+            bpy.data.objects.remove(bpy.data.objects[light_name], do_unlink=True)
 
-        # Searching for objects with names starting with "Default_Infinite_Light"
+        # Search for objects with names starting with "Default_Infinite_Light"
         light_names = [obj.name for obj in bpy.data.objects if obj.type == 'LIGHT' and obj.name.startswith("Default_Infinite_Light")]
 
-        # Removing all objects with the found names
+        # Remove all objects with the found names
         for light_name in light_names:
-            bpy.data.objects[light_name].select_set(True)
-        bpy.ops.object.delete()
+            bpy.data.objects.remove(bpy.data.objects[light_name], do_unlink=True)
         
         return {'FINISHED'}
 
