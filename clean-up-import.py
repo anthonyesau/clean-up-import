@@ -1,8 +1,13 @@
 import bpy
+import os
+from bpy_extras.io_utils import ImportHelper 
+from bpy.types import Operator
+from bpy.props import CollectionProperty
+from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 4),
+   "version": (0, 5),
    "blender": (3, 5, 0)
 }
 
@@ -21,6 +26,9 @@ class CustomPanel(bpy.types.Panel):
         row.operator("custom.delete_camera", text="Delete Camera(s) 'CINEMA_4D_Editor'")
         row = layout.row()
         row.operator("custom.delete_def_vw_lights", text="Delete default lights from VW")
+        row = layout.row()
+        row.operator("rempack.open_filebrowser", text="Remove Pack then Link")
+        
 
 class MergeDuplicateTexturesOperator(bpy.types.Operator):
     bl_idname = "custom.merge_duplicate_textures"
@@ -89,17 +97,56 @@ class DeleteVWLights(bpy.types.Operator):
         
         return {'FINISHED'}
 
+
+class RemovePack_OpenFilebrowser(Operator, ImportHelper): 
+    bl_idname = "rempack.open_filebrowser" 
+    bl_label = "Open the file browser" 
+    bl_description = "Swap the selected images for packed images."
+    
+    filter_glob: StringProperty(
+        default='*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp',
+        options={'HIDDEN'}
+    )
+    
+    files : CollectionProperty(type=bpy.types.PropertyGroup) # Stores properties
+    
+    def execute(self, context): 
+        
+        """Do something with the selected file(s)."""
+                        
+        directory = os.path.dirname(self.filepath)
+        externalFileNames = []
+        for f in self.files:
+            print(os.path.join(directory, f.name)) #get filepath properties from collection pointer
+            externalFileNames.append(f.name)
+        
+        # Loop through Blender's images
+        for image in bpy.data.images:
+            # Check if image filename is in the directory
+            if image.name in externalFileNames:
+                image.filepath = os.path.join(directory, image.name)
+                image.filepath_raw = os.path.join(directory, image.name)
+                if image.packed_file:  
+                    # Remove pack
+                    image.unpack(method='REMOVE')
+                image.update()
+                
+        return {'FINISHED'}
+
+
 def register():
     bpy.utils.register_class(CustomPanel)
     bpy.utils.register_class(MergeDuplicateTexturesOperator)
     bpy.utils.register_class(DeleteCameraOperator)
     bpy.utils.register_class(DeleteVWLights)
+    bpy.utils.register_class(RemovePack_OpenFilebrowser) 
 
 def unregister():
     bpy.utils.unregister_class(CustomPanel)
     bpy.utils.unregister_class(MergeDuplicateTexturesOperator)
     bpy.utils.unregister_class(DeleteCameraOperator)
     bpy.utils.register_class(DeleteVWLights)
+    bpy.utils.unregister_class(RemovePack_OpenFilebrowser) 
 
 if __name__ == "__main__":
     register()
