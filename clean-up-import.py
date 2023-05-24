@@ -20,7 +20,7 @@ class CustomPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("custom.delete_camera", text="Delete Camera(s) 'CINEMA_4D_Editor'")
         row = layout.row()
-        row.operator("custom.delete_vw_lights", text="Delete generic lights imported from VW")
+        row.operator("custom.delete_def_vw_lights", text="Delete default lights from VW")
 
 class MergeDuplicateTexturesOperator(bpy.types.Operator):
     bl_idname = "custom.merge_duplicate_textures"
@@ -68,9 +68,9 @@ class DeleteCameraOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 class DeleteVWLights(bpy.types.Operator):
-    bl_idname = "custom.delete_vw_lights"
-    bl_label = "Delete generic lights imported from VW"
-    bl_description = "Delete generic lights imported from VW."
+    bl_idname = "custom.delete_def_vw_lights"
+    bl_label = "Delete default lights from VW"
+    bl_description = "Delete default lights from VW."
 
     def execute(self, context):
         # Search for objects with names starting with "Ambient_Omni_Light"
