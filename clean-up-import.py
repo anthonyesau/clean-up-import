@@ -7,7 +7,7 @@ from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 6),
+   "version": (0, 7),
    "blender": (3, 5, 0)
 }
 
