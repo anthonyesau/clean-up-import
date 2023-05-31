@@ -29,7 +29,9 @@ class CustomPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("custom.clean_vw_img_names", text="Clean VW image names")
         row = layout.row()
-        row.operator("rempack.open_filebrowser", text="Remove Pack then Link")
+        row.operator("custom.open_filebrowser", text="Remove Pack then Link")
+        row = layout.row()
+        row.operator("custom.correct_gamma", text="Correct Gamma of Textures")
         
 
 class MergeDuplicateTexturesOperator(bpy.types.Operator):
@@ -139,7 +141,7 @@ class CleanVWImageNames(bpy.types.Operator):
 
 
 class RemovePack_OpenFilebrowser(Operator, ImportHelper): 
-    bl_idname = "rempack.open_filebrowser" 
+    bl_idname = "custom.open_filebrowser" 
     bl_label = "Open the file browser" 
     bl_description = "Swap the selected images for packed images."
     
@@ -174,21 +176,41 @@ class RemovePack_OpenFilebrowser(Operator, ImportHelper):
         return {'FINISHED'}
 
 
+class CorrectGamma(bpy.types.Operator):
+    bl_idname = "custom.correct_gamma"
+    bl_label = "Correct gamma of colors for textures of selected objects."
+    bl_description = "Correct gamma of colors for textures of selected objects."
+
+    def execute(self, context):
+
+        for obj in bpy.context.selected_objects:
+            for slot in obj.material_slots:
+                if slot.material:
+                    base_color = slot.material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
+                    for i in range(4):
+                        gamma_corrected_color_channel = base_color[i]**2.2
+                        slot.material.node_tree.nodes["Principled BSDF"].inputs[0].default_value[i] = gamma_corrected_color_channel
+                        slot.material.diffuse_color[i] = gamma_corrected_color_channel
+        
+        return {'FINISHED'}
+
 def register():
     bpy.utils.register_class(CustomPanel)
     bpy.utils.register_class(MergeDuplicateTexturesOperator)
     bpy.utils.register_class(DeleteCameraOperator)
     bpy.utils.register_class(DeleteVWLights)
-    bpy.utils.register_class(CleanVWImageNames) 
-    bpy.utils.register_class(RemovePack_OpenFilebrowser) 
+    bpy.utils.register_class(CleanVWImageNames)
+    bpy.utils.register_class(RemovePack_OpenFilebrowser)
+    bpy.utils.register_class(CorrectGamma)
 
 def unregister():
     bpy.utils.unregister_class(CustomPanel)
     bpy.utils.unregister_class(MergeDuplicateTexturesOperator)
     bpy.utils.unregister_class(DeleteCameraOperator)
     bpy.utils.unregister_class(DeleteVWLights)
-    bpy.utils.unregister_class(CleanVWImageNames) 
-    bpy.utils.unregister_class(RemovePack_OpenFilebrowser) 
+    bpy.utils.unregister_class(CleanVWImageNames)
+    bpy.utils.unregister_class(RemovePack_OpenFilebrowser)
+    bpy.utils.unregister_class(CorrectGamma)
 
 if __name__ == "__main__":
     register()
