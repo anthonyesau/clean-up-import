@@ -7,7 +7,7 @@ from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 7),
+   "version": (0, 8),
    "blender": (3, 5, 0)
 }
 
@@ -158,20 +158,31 @@ class RemovePack_OpenFilebrowser(Operator, ImportHelper):
                         
         directory = os.path.dirname(self.filepath)
         externalFileNames = []
+        externalFileNamesWithExtension = []
         for f in self.files:
             print(os.path.join(directory, f.name)) #get filepath properties from collection pointer
-            externalFileNames.append(f.name)
+            externalFileNamesWithExtension.append(f.name)
+            externalFileNames.append(os.path.splitext(f.name)[0])
+
         
         # Loop through Blender's images
         for image in bpy.data.images:
-            # Check if image filename is in the directory
-            if image.name in externalFileNames:
-                image.filepath = os.path.join(directory, image.name)
-                image.filepath_raw = os.path.join(directory, image.name)
+            # Check if image filename (w/o extension) is in the directory
+            if os.path.splitext(image.name)[0] in externalFileNames:
+                # Check if exact match of extension exists
+                if image.name in externalFileNamesWithExtension:
+                    index = externalFileNamesWithExtension.index(image.name)
+                else:
+                    index = externalFileNames.index(os.path.splitext(image.name)[0])
+                fileName = externalFileNamesWithExtension[index]
+                image.filepath = os.path.join(directory, fileName)
+                image.filepath_raw = os.path.join(directory, fileName)
+                image.name = fileName
                 if image.packed_file:  
                     # Remove pack
                     image.unpack(method='REMOVE')
                 image.update()
+                
                 
         return {'FINISHED'}
 
