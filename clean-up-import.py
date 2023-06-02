@@ -7,7 +7,7 @@ from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 8),
+   "version": (0, 9),
    "blender": (3, 5, 0)
 }
 
@@ -194,14 +194,23 @@ class CorrectGamma(bpy.types.Operator):
 
     def execute(self, context):
 
+        # create list of all materials applied to selected objects
+        materialList = []
         for obj in bpy.context.selected_objects:
             for slot in obj.material_slots:
                 if slot.material:
-                    base_color = slot.material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
-                    for i in range(4):
-                        gamma_corrected_color_channel = base_color[i]**2.2
-                        slot.material.node_tree.nodes["Principled BSDF"].inputs[0].default_value[i] = gamma_corrected_color_channel
-                        slot.material.diffuse_color[i] = gamma_corrected_color_channel
+                    materialList.append(slot.material)
+
+        # remove duplicates from material list
+        materialList = list(set(materialList))
+
+        # go through all materials in list and gamma correct the base color and viewport color
+        for material in materialList:
+            base_color = material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
+            for i in range(4):
+                gamma_corrected_color_channel = base_color[i]**2.2
+                material.node_tree.nodes["Principled BSDF"].inputs[0].default_value[i] = gamma_corrected_color_channel
+                material.diffuse_color[i] = gamma_corrected_color_channel
         
         return {'FINISHED'}
 
