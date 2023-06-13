@@ -7,7 +7,7 @@ from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 9),
+   "version": (0, 10),
    "blender": (3, 5, 0)
 }
 
@@ -21,7 +21,9 @@ class CustomPanel(bpy.types.Panel):
     def draw(self, context):
         layout = self.layout
         row = layout.row()
-        row.operator("custom.merge_duplicate_textures", text="Merge Duplicate Textures")
+        row.operator("custom.merge_duplicate_materials", text="Merge Duplicate Materials")
+        row = layout.row()
+        row.operator("custom.merge_duplicate_images", text="Merge Duplicate Images")
         row = layout.row()
         row.operator("custom.delete_camera", text="Delete Camera(s) 'CINEMA_4D_Editor'")
         row = layout.row()
@@ -31,16 +33,16 @@ class CustomPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("custom.open_filebrowser", text="Remove Pack then Link")
         row = layout.row()
-        row.operator("custom.correct_gamma", text="Correct Gamma of Textures")
+        row.operator("custom.correct_gamma", text="Correct Gamma of Materials")
         
 
-class MergeDuplicateTexturesOperator(bpy.types.Operator):
-    bl_idname = "custom.merge_duplicate_textures"
-    bl_label = "Merge Duplicate Textures"
-    bl_description = "Merge texName, texName.001, texName.002, et cetera."
+class MergeDuplicateMaterialsOperator(bpy.types.Operator):
+    bl_idname = "custom.merge_duplicate_materials"
+    bl_label = "Merge Duplicate Materials"
+    bl_description = "Merge texName.001, texName.002, et cetera to texName."
 
     def execute(self, context):
-        print("----- Merge Duplicate Textures -----")
+        print("----- Merge Duplicate Materials -----")
 
         # make a list of all material names
         mat_list = [x.name for x in bpy.data.materials]
@@ -59,8 +61,47 @@ class MergeDuplicateTexturesOperator(bpy.types.Operator):
 
                     # remap the duplicate to the one without number extension            
                     mat.user_remap(bpy.data.materials[index_clean].id_data)
+                else:
+                    # change image name to index of image without number extension
+                    mat.name = mat.name[:-4]
 
         return {'FINISHED'}
+
+
+class MergeDuplicateImagesOperator(bpy.types.Operator):
+    bl_idname = "custom.merge_duplicate_images"
+    bl_label = "Merge Duplicate Images"
+    bl_description = "Merge imageName.001, imageName.002, et cetera to imageName."
+
+    def execute(self, context):
+        print("----- Merge Duplicate Images -----")
+
+        # make a list of all image names
+        img_list = [x.name for x in bpy.data.images]
+
+        # go through all images
+        for img in bpy.data.images:
+            # check if last three characters are numbers
+            if img.name[-3:].isnumeric():
+                # Display alert popup
+
+                # check if image without number extension exists
+                if img.name[:-4] in img_list:
+                    
+                    # find indices of numbered image and image w/o number
+                    index_clean = img_list.index(img.name[:-4])
+                    index_wrong = img_list.index(img.name)
+
+                    # remap the duplicate to the one without number extension            
+                    img.user_remap(bpy.data.images[index_clean].id_data)
+                
+                else:
+                    # change image name to index of image without number extension
+                    img.name = img.name[:-4]
+
+        return {'FINISHED'}
+
+
 
 class DeleteCameraOperator(bpy.types.Operator):
     bl_idname = "custom.delete_camera"
@@ -189,8 +230,8 @@ class RemovePack_OpenFilebrowser(Operator, ImportHelper):
 
 class CorrectGamma(bpy.types.Operator):
     bl_idname = "custom.correct_gamma"
-    bl_label = "Correct gamma of colors for textures of selected objects."
-    bl_description = "Correct gamma of colors for textures of selected objects."
+    bl_label = "Correct gamma of colors for materials of selected objects."
+    bl_description = "Correct gamma of colors for materials of selected objects."
 
     def execute(self, context):
 
@@ -216,7 +257,8 @@ class CorrectGamma(bpy.types.Operator):
 
 def register():
     bpy.utils.register_class(CustomPanel)
-    bpy.utils.register_class(MergeDuplicateTexturesOperator)
+    bpy.utils.register_class(MergeDuplicateMaterialsOperator)
+    bpy.utils.register_class(MergeDuplicateImagesOperator)
     bpy.utils.register_class(DeleteCameraOperator)
     bpy.utils.register_class(DeleteVWLights)
     bpy.utils.register_class(CleanVWImageNames)
@@ -225,7 +267,8 @@ def register():
 
 def unregister():
     bpy.utils.unregister_class(CustomPanel)
-    bpy.utils.unregister_class(MergeDuplicateTexturesOperator)
+    bpy.utils.unregister_class(MergeDuplicateMaterialsOperator)
+    bpy.utils.unregister_class(MergeDuplicateImagesOperator)
     bpy.utils.unregister_class(DeleteCameraOperator)
     bpy.utils.unregister_class(DeleteVWLights)
     bpy.utils.unregister_class(CleanVWImageNames)
