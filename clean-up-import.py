@@ -7,7 +7,7 @@ from bpy.props import StringProperty, BoolProperty
 
 bl_info = {
    "name": "Clean Up Import",
-   "version": (0, 10),
+   "version": (0, 11),
    "blender": (3, 5, 0)
 }
 
@@ -31,7 +31,9 @@ class CustomPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("custom.clean_vw_img_names", text="Clean VW image names")
         row = layout.row()
-        row.operator("custom.open_filebrowser", text="Remove Pack then Link")
+        row.operator("custom.relink_packed_images", text="Relink Images")
+        row = layout.row()
+        row.operator("custom.relink_color_and_transparency_images", text="Relink Color and Transparency Images")
         row = layout.row()
         row.operator("custom.correct_gamma", text="Correct Gamma of Materials")
         
@@ -145,18 +147,16 @@ class DeleteVWLights(bpy.types.Operator):
 class CleanVWImageNames(bpy.types.Operator):
     bl_idname = "custom.clean_vw_img_names"
     bl_label = "Clean up Vectorworks Image Names."
-    bl_description = "Clean up Vectorworks Image Names."
+    bl_description = "Clean up Vectorworks image names like NNA#2_."
 
     # ----- Clean up Vectorworks Image Names -----
-
-    # TODO: 
 
     def execute(self, context):
 
         print("----- Clean up Vectorworks image names -----")
 
         # Create a list of prefixes to clean up
-        vw_tex_substrings = ["NNA#3_", "NNA#2_", " Color", ".001"]
+        vw_tex_substrings = ["NNA#3_", "NNA#2_"]
 
         for image in bpy.data.images:
 
@@ -181,10 +181,10 @@ class CleanVWImageNames(bpy.types.Operator):
         return {'FINISHED'}
 
 
-class RemovePack_OpenFilebrowser(Operator, ImportHelper): 
-    bl_idname = "custom.open_filebrowser" 
-    bl_label = "Open the file browser" 
-    bl_description = "Swap the selected images for packed images."
+class RelinkPackedImages(Operator, ImportHelper): 
+    bl_idname = "custom.relink_packed_images" 
+    bl_label = "" 
+    bl_description = "Select image files to relink existing images (packed or otherwise)."
     
     filter_glob: StringProperty(
         default='*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp',
@@ -227,6 +227,68 @@ class RemovePack_OpenFilebrowser(Operator, ImportHelper):
                 
         return {'FINISHED'}
 
+class RelinkColorAndTransparencyImages(Operator, ImportHelper): 
+    bl_idname = "custom.relink_color_and_transparency_images" 
+    bl_label = "" 
+    bl_description = "Same as Relink Images plus handling of separate color and transparent images that should be relinked to a single file."
+    
+    filter_glob: StringProperty(
+        default='*.jpg;*.jpeg;*.png;*.tif;*.tiff;*.bmp',
+        options={'HIDDEN'}
+    )
+    
+    files : CollectionProperty(type=bpy.types.PropertyGroup) # Stores properties
+    
+    def execute(self, context): 
+        
+        """Do something with the selected file(s)."""
+                        
+        directory = os.path.dirname(self.filepath)
+        externalFileNames = []
+        externalFileNamesWithExtension = []
+        for f in self.files:
+            print(os.path.join(directory, f.name)) #get filepath properties from collection pointer
+            externalFileNamesWithExtension.append(f.name)
+            externalFileNames.append(os.path.splitext(f.name)[0])
+
+        suffixes = [" Color", " Transparency"]
+
+        # Loop through Blender's images
+        for image in bpy.data.images:
+            
+            # Establish starting values for variables
+            index = None
+            internalFileNameTrimmed = None
+            internalFileName = os.path.splitext(image.name)[0]
+            internalFileNameWithExtension = image.name
+            for suffix in suffixes:
+                if internalFileName.endswith(suffix):
+                    internalFileNameTrimmed = internalFileName[:-len(suffix)]
+
+            # Check if image filename (w/o extension) is in the directory
+            if internalFileName in externalFileNames:
+                # Check if exact match of extension exists
+                if image.name in externalFileNamesWithExtension:
+                    index = externalFileNamesWithExtension.index(image.name)
+                else:
+                    index = externalFileNames.index(internalFileName)
+            # Check if image filename (w/o suffix) is in the directory
+            elif internalFileNameTrimmed != None and internalFileNameTrimmed in externalFileNames:
+                index = externalFileNames.index(internalFileNameTrimmed)
+
+            if index != None: 
+                fileName = externalFileNamesWithExtension[index]
+                image.filepath = os.path.join(directory, fileName)
+                image.filepath_raw = os.path.join(directory, fileName)
+                image.name = fileName
+                if image.packed_file:  
+                    # Remove pack
+                    image.unpack(method='REMOVE')
+                image.update()
+
+                
+                
+        return {'FINISHED'}
 
 class CorrectGamma(bpy.types.Operator):
     bl_idname = "custom.correct_gamma"
@@ -262,7 +324,8 @@ def register():
     bpy.utils.register_class(DeleteCameraOperator)
     bpy.utils.register_class(DeleteVWLights)
     bpy.utils.register_class(CleanVWImageNames)
-    bpy.utils.register_class(RemovePack_OpenFilebrowser)
+    bpy.utils.register_class(RelinkPackedImages)
+    bpy.utils.register_class(RelinkColorAndTransparencyImages)
     bpy.utils.register_class(CorrectGamma)
 
 def unregister():
@@ -272,7 +335,8 @@ def unregister():
     bpy.utils.unregister_class(DeleteCameraOperator)
     bpy.utils.unregister_class(DeleteVWLights)
     bpy.utils.unregister_class(CleanVWImageNames)
-    bpy.utils.unregister_class(RemovePack_OpenFilebrowser)
+    bpy.utils.unregister_class(RelinkPackedImages)
+    bpy.utils.unregister_class(RelinkColorAndTransparencyImages)
     bpy.utils.unregister_class(CorrectGamma)
 
 if __name__ == "__main__":
