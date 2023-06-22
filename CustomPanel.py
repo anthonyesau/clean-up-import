@@ -29,6 +29,8 @@ class CustomPanel(bpy.types.Panel):
         row.operator("custom.format_vw_area_lights", text="Format Area Lights")
         row = layout.row()
         row.operator("custom.dissolve_top_vw_empties", text="Dissolve top VW empties")
+        row = layout.row()
+        row.operator("custom.enable_auto_smooth", text="Enable Auto Smooth")
 
 
 def register():

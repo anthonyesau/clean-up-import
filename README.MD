@@ -19,3 +19,5 @@
 ## FormatVWAreaLights
 
 ## DissolveTopVWEmpties
+
+## EnableAutoSmooth
