@@ -27,6 +27,8 @@ class CustomPanel(bpy.types.Panel):
         row.operator("custom.correct_gamma", text="Correct Gamma of Materials")
         row = layout.row()
         row.operator("custom.format_vw_area_lights", text="Format Area Lights")
+        row = layout.row()
+        row.operator("custom.dissolve_top_vw_empties", text="Dissolve top VW empties")
 
 
 def register():

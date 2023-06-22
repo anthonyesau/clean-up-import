@@ -18,7 +18,7 @@ class DeleteVWCameraOperator(bpy.types.Operator):
         return {'FINISHED'}
 
 def register():
-    bpy.utils.register_class(DeleteCameraOperator)
+    bpy.utils.register_class(DeleteVWCameraOperator)
 
 def unregister():
-    bpy.utils.unregister_class(DeleteCameraOperator)
+    bpy.utils.unregister_class(DeleteVWCameraOperator)

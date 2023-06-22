@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Clean Up Import",
     "author": "Anthony Esau",
-    "version": (0, 12),
+    "version": (0, 14),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -19,9 +19,10 @@ modulesNames = [\
 "DeleteVWLights", \
 "MergeDuplicateImages", \
 "MergeDuplicateMaterials", \
-"RelinkColorAndTransparencyImages",\
-"RelinkPackedImages",\
-"FormatVWAreaLights"\
+"RelinkColorAndTransparencyImages", \
+"RelinkPackedImages", \
+"FormatVWAreaLights", \
+"DissolveTopVWEmpties"\
 ]
  
 import sys
