@@ -15,3 +15,5 @@
 ## RelinkColorAndTransparencyImages
 
 ## RelinkPackedImages
+
+## FormatVWAreaLights

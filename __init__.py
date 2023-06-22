@@ -20,7 +20,9 @@ modulesNames = [\
 "MergeDuplicateImages", \
 "MergeDuplicateMaterials", \
 "RelinkColorAndTransparencyImages",\
-"RelinkPackedImages"]
+"RelinkPackedImages",\
+"FormatVWAreaLights"\
+]
  
 import sys
 import importlib

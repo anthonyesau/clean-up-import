@@ -25,6 +25,8 @@ class CustomPanel(bpy.types.Panel):
         row.operator("custom.relink_color_and_transparency_images", text="Relink Color and Transparency Images")
         row = layout.row()
         row.operator("custom.correct_gamma", text="Correct Gamma of Materials")
+        row = layout.row()
+        row.operator("custom.format_vw_area_lights", text="Format Area Lights")
 
 
 def register():
