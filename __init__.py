@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Clean Up Import",
     "author": "Anthony Esau",
-    "version": (0, 16),
+    "version": (0, 17),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -24,7 +24,8 @@ modulesNames = [\
     "FormatVWAreaLights", \
     "DissolveTopVWEmpties", \
     "EnableAutoSmooth", \
-    "ResequenceObjectNames" \
+    "ResequenceObjectNames", \
+    "MaterialSwapper"\
 ]
  
 import sys
