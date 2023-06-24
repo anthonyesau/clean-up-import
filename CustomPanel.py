@@ -31,6 +31,8 @@ class CustomPanel(bpy.types.Panel):
         row.operator("custom.dissolve_top_vw_empties", text="Dissolve top VW empties")
         row = layout.row()
         row.operator("custom.enable_auto_smooth", text="Enable Auto Smooth")
+        row = layout.row()
+        row.operator("object.resequence_names", text="Resequence Object Names")
 
 
 def register():

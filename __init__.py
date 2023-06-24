@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Clean Up Import",
     "author": "Anthony Esau",
-    "version": (0, 15),
+    "version": (0, 16),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -12,18 +12,19 @@ bl_info = {
 }
 
 modulesNames = [\
-"CleanVWImageNames", \
-"CorrectGamma", \
-"CustomPanel", \
-"DeleteVWCamera", \
-"DeleteVWLights", \
-"MergeDuplicateImages", \
-"MergeDuplicateMaterials", \
-"RelinkColorAndTransparencyImages", \
-"RelinkPackedImages", \
-"FormatVWAreaLights", \
-"DissolveTopVWEmpties", \
-"EnableAutoSmooth"\
+    "CleanVWImageNames", \
+    "CorrectGamma", \
+    "CustomPanel", \
+    "DeleteVWCamera", \
+    "DeleteVWLights", \
+    "MergeDuplicateImages", \
+    "MergeDuplicateMaterials", \
+    "RelinkColorAndTransparencyImages", \
+    "RelinkPackedImages", \
+    "FormatVWAreaLights", \
+    "DissolveTopVWEmpties", \
+    "EnableAutoSmooth", \
+    "ResequenceObjectNames" \
 ]
  
 import sys
