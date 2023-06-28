@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Clean Up Import",
     "author": "Anthony Esau",
-    "version": (0, 18),
+    "version": (0, 19),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -20,6 +20,8 @@ modulesNames = [\
     "MergeDuplicateImages", \
     "MergeDuplicateMaterials", \
     "RelinkColorAndTransparencyImages", \
+    "ConnectAlpha", \
+    "SetImgNodeSRGB", \
     "RelinkPackedImages", \
     "FormatVWAreaLights", \
     "DissolveTopVWEmpties", \
