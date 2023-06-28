@@ -1,7 +1,7 @@
 bl_info = {
     "name": "Clean Up Import",
     "author": "Anthony Esau",
-    "version": (0, 19),
+    "version": (0, 20),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -22,6 +22,7 @@ modulesNames = [\
     "RelinkColorAndTransparencyImages", \
     "ConnectAlpha", \
     "SetImgNodeSRGB", \
+    "SetAlphaBlendMode", \
     "RelinkPackedImages", \
     "FormatVWAreaLights", \
     "DissolveTopVWEmpties", \

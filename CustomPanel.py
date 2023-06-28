@@ -28,6 +28,8 @@ class CustomPanel(bpy.types.Panel):
         row = layout.row()
         row.operator("custom.set_img_node_srgb", text="Set image nodes to sRGB")
         row = layout.row()
+        row.operator("custom.set_alpha_blend_mode", text="Set alpha blend mode")
+        row = layout.row()
         row.operator("custom.correct_gamma", text="Correct Gamma of Materials")
         row = layout.row()
         row.operator("custom.format_vw_area_lights", text="Format Area Lights")
