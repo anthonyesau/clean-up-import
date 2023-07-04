@@ -1,7 +1,7 @@
 bl_info = {
-    "name": "Clean Up Import",
+    "name": "AE Utilz",
     "author": "Anthony Esau",
-    "version": (0, 21),
+    "version": (0, 22),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -28,7 +28,8 @@ modulesNames = [\
     "DissolveTopVWEmpties", \
     "EnableAutoSmooth", \
     "ResequenceObjectNames", \
-    "MaterialSwapper"\
+    "MaterialSwapper", \
+    "RelinkImages"\
 ]
  
 import sys
