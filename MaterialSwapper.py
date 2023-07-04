@@ -6,7 +6,7 @@ class MaterialSwapperPanel(bpy.types.Panel):
     bl_idname = "OBJECT_PT_material_swap_panel"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
-    bl_category = "Clean Up Import"
+    bl_category = "AE Utilz"
 
     def draw(self, context):
         layout = self.layout

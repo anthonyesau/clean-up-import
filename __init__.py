@@ -1,7 +1,7 @@
 bl_info = {
     "name": "AE Utilz",
     "author": "Anthony Esau",
-    "version": (0, 22),
+    "version": (0, 23),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -19,11 +19,9 @@ modulesNames = [\
     "DeleteVWLights", \
     "MergeDuplicateImages", \
     "MergeDuplicateMaterials", \
-    "RelinkColorAndTransparencyImages", \
     "ConnectAlpha", \
     "SetImgNodeSRGB", \
     "SetAlphaBlendMode", \
-    "RelinkPackedImages", \
     "FormatVWAreaLights", \
     "DissolveTopVWEmpties", \
     "EnableAutoSmooth", \
