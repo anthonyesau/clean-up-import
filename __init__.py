@@ -1,7 +1,7 @@
 bl_info = {
     "name": "AE Utilz",
     "author": "Anthony Esau",
-    "version": (0, 23),
+    "version": (0, 24),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -27,7 +27,8 @@ modulesNames = [\
     "EnableAutoSmooth", \
     "ResequenceObjectNames", \
     "MaterialSwapper", \
-    "RelinkImages"\
+    "RelinkImages",\
+    "Batch rename images"\
 ]
  
 import sys
