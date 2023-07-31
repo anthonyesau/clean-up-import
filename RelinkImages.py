@@ -38,7 +38,8 @@ class RelinkImagesWithSuffixResolverOperator(bpy.types.Operator, ImportHelper):
             print(os.path.join(directory, f.name)) #get filepath properties from collection pointer
             externalFileNamesWithExtension.append(f.name)
             externalFileNames.append(os.path.splitext(f.name)[0])
-            externalFileNamesBeginnings.append(f.name.split(' ', 1)[0])
+            # externalFileNamesBeginnings.append(f.name.split(' ', 1)[0])
+            externalFileNamesBeginnings.append(f.name[:25])
 
         suffixes = None
         # suffixes = [" Color", " Transparency"]
@@ -52,6 +53,7 @@ class RelinkImagesWithSuffixResolverOperator(bpy.types.Operator, ImportHelper):
             internalFileName = os.path.splitext(internalFileNameWithExtension)[0]
             # Identify the beginning of the file name (see elif around line 78)
             # internalFileNameBeginning = internalFileName.split(' ', 1)[0]
+            internalFileNameBeginning = internalFileName[:25]
 
             # If specific suffixes are not defined, try to match any suffixes
             if suffixes == None:
@@ -75,8 +77,8 @@ class RelinkImagesWithSuffixResolverOperator(bpy.types.Operator, ImportHelper):
             elif internalFileNameTrimmed != None and internalFileNameTrimmed in externalFileNames:
                 index = externalFileNames.index(internalFileNameTrimmed)
             # Check if the beginning of the file name matches
-            # elif internalFileNameBeginning in externalFileNamesBeginnings:
-            #     index = externalFileNamesBeginnings.index(internalFileNameBeginning)
+            elif internalFileNameBeginning in externalFileNamesBeginnings:
+                index = externalFileNamesBeginnings.index(internalFileNameBeginning)
 
             if index != None:
                 fileName = externalFileNamesWithExtension[index]
