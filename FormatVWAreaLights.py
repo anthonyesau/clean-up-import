@@ -5,10 +5,11 @@ class FormatVWAreaLights(bpy.types.Operator):
     bl_idname = "custom.format_vw_area_lights"
     bl_label = "Set lights to match the location and size of their associated geometry."
     bl_description = "Set lights to match the location and size of their associated geometry."
+    bl_options = {'UNDO'}
 
 
     def execute(self, context):
-
+        
         # Iterate through all objects in the scene
         for obj in bpy.context.scene.objects:
             
@@ -19,12 +20,15 @@ class FormatVWAreaLights(bpy.types.Operator):
                 for child in obj.children:        
                     if child.type == 'MESH':
                         
+                        bpy.ops.object.select_all(action='DESELECT')
                         # Clear parent and keep transformation
                         child.select_set(True)
                         bpy.ops.object.parent_clear(type='CLEAR_KEEP_TRANSFORM')
                         bpy.ops.object.transform_apply(scale=True)
                         # Set the scale of the Area light to 1
                         obj.scale = (1, 1, 1)
+                        # Clear the parent
+                        obj.parent = None
 
 
                         # Select child object to set mode
@@ -76,6 +80,14 @@ class FormatVWAreaLights(bpy.types.Operator):
                         obj.rotation_euler = final_quat.to_euler()
 
                         child.name = obj.name + " Geometry"
+                        bpy.data.objects.remove(child)
+                        # bpy.data.meshes.remove(child.data, do_unlink=True)
+                    
+            if obj.type == 'EMPTY' and obj.name.startswith("Light_"):
+                for child in obj.children:
+                    bpy.data.objects.remove(child)
+                bpy.data.objects.remove(obj)
+
 
         return {'FINISHED'}
 
