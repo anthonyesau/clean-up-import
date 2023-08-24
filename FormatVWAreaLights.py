@@ -28,7 +28,7 @@ class FormatVWAreaLights(bpy.types.Operator):
                         # Set the scale of the Area light to 1
                         obj.scale = (1, 1, 1)
                         # Clear the parent
-                        obj.parent = None
+                        # obj.parent = None
 
 
                         # Select child object to set mode
