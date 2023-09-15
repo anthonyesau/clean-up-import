@@ -10,6 +10,8 @@ class MergeDuplicateImagesOperator(bpy.types.Operator):
 
         # make a list of all image names
         img_list = [x.name for x in bpy.data.images]
+        img_filepath_list = [x.filepath for x in bpy.data.images]
+        img_filepath_raw_list = [x.filepath_raw for x in bpy.data.images]
 
         # go through all images
         for img in bpy.data.images:
@@ -30,6 +32,14 @@ class MergeDuplicateImagesOperator(bpy.types.Operator):
                 else:
                     # change image name to index of image without number extension
                     img.name = img.name[:-4]
+            
+            # check if the same image file is linked in the data of other images
+            if img.filepath in img_filepath_list and len(img_filepath_list) > 1:
+                index = img_filepath_list.index(img.filepath)
+                img.user_remap(bpy.data.images[index].id_data)
+            elif img.filepath_raw in img_filepath_raw_list and len(img_filepath_raw_list) > 1:
+                index = img_filepath_raw_list.index(img.filepath_raw)
+                img.user_remap(bpy.data.images[index].id_data)
 
         return {'FINISHED'}
 

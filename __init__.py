@@ -1,7 +1,7 @@
 bl_info = {
     "name": "AE Utilz",
     "author": "Anthony Esau",
-    "version": (0, 24),
+    "version": (0, 25),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",

@@ -41,9 +41,19 @@ Select files on disk to re-link to existing image assets. The suffix resolver wi
 
 ## DeleteVWLights
 
-## MergeDuplicateImages
+## Merge Duplicate Images
+
+Remaps `material_name.002` and `material_name.003` to `material_name`. 
+
+If no `material_name` already exists, `material_name.002` will be renamed to `material_name`.
+
+Remaps multiple image data with the same filepath to the first image data that includes that filepath. The list of images is in ascending order based on name ('a' before 'b', '1' before '2', et cetera). 
 
 ## MergeDuplicateMaterials
+
+Remaps `material_name.002` and `material_name.003` to `material_name`. 
+
+If no `material_name` already exists, `material_name.002` will be renamed to `material_name`.
 
 ## FormatVWAreaLights
 
