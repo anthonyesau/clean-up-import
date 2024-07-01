@@ -1,7 +1,7 @@
 bl_info = {
     "name": "AE Utilz",
     "author": "Anthony Esau",
-    "version": (0, 25),
+    "version": (0, 26),
     "blender": (3, 5, 0),
     "location": "",
     "description": "",
@@ -28,6 +28,7 @@ modulesNames = [\
     "ResequenceObjectNames", \
     "MaterialSwapper", \
     "RelinkImages",\
+    "RefreshImages",\
     "Batch rename images"\
 ]
  
