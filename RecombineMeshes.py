@@ -27,23 +27,41 @@ class RecombineMeshes(bpy.types.Operator):
             # Join the selected mesh objects
             bpy.ops.object.join()
 
-            # The joined object is now a single mesh. Rename it and parent it back to the empty.
+            # The joined object is now a single mesh.
             joined_mesh = bpy.context.active_object
+            
+            # Rename the new joined mesh
             joined_mesh.name = empty.name + "_joined"
             
             # Set the joined_mesh mesh data-block name to match joined_mesh.name
             joined_mesh.data.name = joined_mesh.name
 
+
+
+            # Store the original world matrix
+            original_matrix_world = joined_mesh.matrix_world.copy()
+
+            # Clear the current parent while keeping transformation
+            joined_mesh.parent = None
+            joined_mesh.matrix_parent_inverse.identity()
+
+            # Set the parent to the empty's parent
             joined_mesh.parent = empty.parent
+
+            # Adjust the object's world matrix to match the original matrix
+            joined_mesh.matrix_world = original_matrix_world
+
+            # Delete the empty
             bpy.data.objects.remove(empty, do_unlink=True)
 
-
+        # Get the selected objects to operate on
         selected_objects = bpy.context.selected_objects
 
         # Switch to Object Mode
         if bpy.ops.object.mode_set.poll():
             bpy.ops.object.mode_set(mode='OBJECT')
 
+        # Create a list to fill with the empty objects
         empties = []
 
         for obj in selected_objects:
@@ -56,7 +74,7 @@ class RecombineMeshes(bpy.types.Operator):
         for empty in empties:
             join_meshes_under_empty(empty)
 
-        bpy.ops.ed.undo_push()
+        bpy.ops.ed.undo_push() # Try to enable undo for this operation. Not sure it works...
         return {'FINISHED'}
 
 def register():
