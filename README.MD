@@ -62,3 +62,17 @@ If no `material_name` already exists, `material_name.002` will be renamed to `ma
 ## EnableAutoSmooth
 
 ## ResequenceObjectNames
+
+
+## Adding new tools guide
+
+Create a new file for your tool such as `ExtractVWDesignLayers.py`. Review the existing files to understand the formatting until more in-depth guidance is provided.
+
+In `__init__.py` add the name of that file to the `modulesNames` list.
+
+In `CustomPanel.py` add a button for the new tool by duplicating and modifying existing lines like this:
+
+```
+        row = layout.row()
+        row.operator("custom.extract_vw_design_layers", text="Extract VW Design Layers")
+```
