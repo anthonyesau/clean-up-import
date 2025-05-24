@@ -13,7 +13,7 @@ class ExtractVWDesignLayers(bpy.types.Operator):
             # Clear the parent
             child.parent = None
             
-            # Restore childs location / rotation / scale
+            # Restore child's location / rotation / scale
             child.matrix_world = matrixcopy
 
         def move_to_collection(obj, target_collection):
@@ -28,8 +28,7 @@ class ExtractVWDesignLayers(bpy.types.Operator):
             for child in obj.children:
                 move_to_collection(child, target_collection)
 
-
-        def move_children_to_collection(obj):
+        def move_children_to_collection(obj, parent_collection):
             # Check if the object is an empty
             if obj.type == 'EMPTY':
                 # Create a new collection with the same name as the empty if it doesn't exist
@@ -37,7 +36,7 @@ class ExtractVWDesignLayers(bpy.types.Operator):
                 new_collection = bpy.data.collections.get(collection_name)
                 if not new_collection:
                     new_collection = bpy.data.collections.new(collection_name)
-                    bpy.context.scene.collection.children.link(new_collection)
+                    parent_collection.children.link(new_collection)
                 
                 # Iterate through the children of the empty
                 for child in obj.children:
@@ -49,20 +48,21 @@ class ExtractVWDesignLayers(bpy.types.Operator):
                 # Remove the empty from the scene
                 bpy.data.objects.remove(obj, do_unlink=True)
 
-
-
-        # find all objects with names starting with "Vectorworks_"
+        # Find all objects with names starting with "Vectorworks_"
         vwScenes = [obj for obj in bpy.data.objects if obj.type == 'EMPTY' and obj.name.startswith("Vectorworks_")]
         
-        # loop through all the children of the vwScenes empties and clear parent and keep transforms
+        # Loop through all the children of the vwScenes empties and clear parent and keep transforms
         for individualVWScene in vwScenes:
+            # Assume the first collection of the Vectorworks scene is the parent collection
+            parent_collection = individualVWScene.users_collection[0] if individualVWScene.users_collection else bpy.context.scene.collection
+
             for objectGrouping in individualVWScene.children:
                 if objectGrouping.name == "Geometry":
                     for designLayer in objectGrouping.children:
-                        move_children_to_collection(designLayer)
+                        move_children_to_collection(designLayer, parent_collection)
                     bpy.data.objects.remove(objectGrouping, do_unlink=True)
                 else:
-                    move_children_to_collection(objectGrouping)
+                    move_children_to_collection(objectGrouping, parent_collection)
             bpy.data.objects.remove(individualVWScene, do_unlink=True)
             
         bpy.ops.ed.undo_push()
