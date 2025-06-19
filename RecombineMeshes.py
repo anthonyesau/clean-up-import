@@ -1,4 +1,5 @@
 import bpy
+import bmesh
 
 class RecombineMeshes(bpy.types.Operator):
     """Combine sibling meshes that are all children of the same empty parent"""
@@ -29,6 +30,38 @@ class RecombineMeshes(bpy.types.Operator):
 
             # The joined object is now a single mesh.
             joined_mesh = bpy.context.active_object
+
+            # Merge duplicate vertices using bmesh
+            bm = bmesh.new()
+            print(f"Processing mesh: {joined_mesh.name}")
+
+            # Load mesh into bmesh
+            bm.from_mesh(joined_mesh.data)
+
+            verts_before = len(bm.verts)
+            print(f"  Verts before: {verts_before}")
+
+            # Mark boundary edges as sharp
+            for edge in bm.edges:
+                if edge.is_boundary:
+                    edge.smooth = False
+
+            # Remove doubles
+            bmesh.ops.remove_doubles(bm, verts=bm.verts, dist=0.001)
+
+            verts_after = len(bm.verts)
+            print(f"  Verts after: {verts_after}")
+            print(f"  Removed {verts_before - verts_after} vertices.")
+
+            # Write back to mesh
+            bm.to_mesh(joined_mesh.data)
+            joined_mesh.data.update()
+            
+            # Clear bmesh for next mesh
+            bm.clear()
+
+            bm.free()
+
             
             # Rename the new joined mesh
             joined_mesh.name = empty.name + "_joined"
