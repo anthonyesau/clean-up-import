@@ -15,6 +15,10 @@ class RecombineMeshes(bpy.types.Operator):
                 # Skip this empty if there are non-mesh children or another empty
                 return
 
+            # Check if all mesh children start with "Polygon"
+            if not all(child.name.startswith("Polygon") for child in mesh_children):
+                return
+
             # Deselect all objects
             bpy.ops.object.select_all(action='DESELECT')
 
